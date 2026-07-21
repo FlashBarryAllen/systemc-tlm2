@@ -8,4 +8,5 @@ void TEST_aaa() {
 
 void TEST_top() {
     top my_top("my_top");
+    sc_start(20, sc_core::SC_NS);
 }

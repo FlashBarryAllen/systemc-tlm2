@@ -19,7 +19,8 @@ int sc_main(int argc, char* argv[])
 
     TEST_aaa();
     TEST_top();
-    sc_start(20, sc_core::SC_NS);
+    //top my_top("my_top");
+    //sc_start(20, sc_core::SC_NS);
     std::cout << "done" << std::endl;
 
     return 0;
