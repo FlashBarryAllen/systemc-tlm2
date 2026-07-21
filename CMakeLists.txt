@@ -34,6 +34,8 @@ link_directories("${CMAKE_SOURCE_DIR}/libs/tinyxml2/")
 add_executable(${PROJECT_NAME} 
     ${CMAKE_SOURCE_DIR}/main.cpp
     ${CMAKE_SOURCE_DIR}/test/test.cpp
+    ${CMAKE_SOURCE_DIR}/modules/top/top.cpp
+    ${CMAKE_SOURCE_DIR}/modules/memory/memory.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} debug gtest              optimized gtest)

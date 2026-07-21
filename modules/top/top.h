@@ -1,47 +1,46 @@
 #ifndef TOP_H
 #define TOP_H
+#include <tlm>
+#include <tlm_utils/simple_initiator_socket.h>
+#include <tlm_utils/simple_target_socket.h>
 
-#include <node.h>
-#include <tg-tlm.h>
-#include <traffic-desc.h>
-#include <gen_utils.h>
-#include <memory.h>
-#include <memory>
-#include <dma_ctrl_lt.h>
-#include <dma_ctrl_at.h>
-#include <dma_engine.h>
-
-using namespace sc_core;
-using namespace sc_dt;
 using namespace std;
-using namespace gen_utils;
+using namespace sc_core;
+using namespace tlm;
+using namespace tlm_utils;
 
-#define RAM_SIZE (8 * 1024)
+class a : public sc_module {
+    public:
+        SC_HAS_PROCESS(a);
+        a(sc_module_name name);
 
-struct gen_data
-{
-    int cmd;
-    uint64_t addr;
-    unsigned char * data_ptr;
-    int len;
+    public:
+        void run();
+        sc_in_clk m_clk;
+        simple_initiator_socket<a> snd;
 };
 
-class top : public sc_core::sc_module {
+class b : public sc_module {
+    public:
+        SC_HAS_PROCESS(b);
+        b(sc_module_name name);
+
+    public:
+        void run();
+        tlm_sync_enum rcv_from(tlm_generic_payload& trans, tlm_phase& phase, sc_time& time);
+        sc_in_clk m_clk;
+        simple_target_socket<b> rcv;
+};
+
+class top : public sc_module {
     public:
         SC_HAS_PROCESS(top);
-        top(sc_core::sc_module_name name);
-        ~top();
- 
-        void run();
-        virtual void b_transport(tlm::tlm_generic_payload& trans, sc_time& delay);
- 
+        top(sc_module_name name);
+        a AA;
+        b BB;
+    
     public:
-        sc_clock clk;
-        sc_in_clk clk_in;
-        TLMTrafficGenerator tg;
-        memory b0_mem;
-        //tlm_utils::simple_target_socket<top> tgt_socket;
-        deque<shared_ptr<gen_data>> m_input_que;
- };
+        sc_clock m_clk;
+};
 
  #endif
