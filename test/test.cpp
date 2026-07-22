@@ -3,10 +3,12 @@
 #include <map>
 
 void TEST_aaa() {
-    std::cout << "aaa" << std::endl;
+    cout << "************TEST_aaa************" << endl;
+    cout << "aaa" << endl;
 }
 
 void TEST_top() {
+    cout << "*************TEST_top***********" << endl;
     top my_top("my_top");
-    sc_start(20, sc_core::SC_NS);
+    sc_start(200, sc_core::SC_NS);
 }

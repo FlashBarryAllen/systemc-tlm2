@@ -9,8 +9,8 @@ a::a(sc_module_name name) : sc_module(name) {
 void a::run() {
     tlm_generic_payload trans;
     trans.set_command(TLM_WRITE_COMMAND);
-    int data[4] = {0x12, 0x34, 0x56, 0x78};
-    trans.set_data_ptr((unsigned char*)data);
+    unsigned char data[4] = {0x12, 0x34, 0x56, 0x78};
+    trans.set_data_ptr(data);
     trans.set_data_length(4);
     tlm_phase phase = BEGIN_REQ;
     sc_time time = SC_ZERO_TIME;
@@ -31,7 +31,7 @@ b::b(sc_module_name name) : sc_module(name) {
 
 tlm_sync_enum b::rcv_from(tlm_generic_payload& trans, tlm_phase& phase, sc_time& time) {
     unsigned char * data = trans.get_data_ptr();
-    cout << "time: " << sc_time_stamp() << ", data[0]" << endl;
+    cout << "time: " << sc_time_stamp() << hex << ", data[0]=0x" << (int)data[0] << endl;
     return TLM_COMPLETED;
 }
 
@@ -40,7 +40,7 @@ void b::run() {
     cout << "time: " << sc_time_stamp() << ", b::run()" << endl;
 }
 
-top::top(sc_module_name name) : AA("aa"), BB("bb"), m_clk("clk", 1, SC_NS) {
+top_tlm::top_tlm(sc_module_name name) : AA("aa"), BB("bb"), m_clk("clk", 1, SC_NS) {
     AA.m_clk(m_clk);
     BB.m_clk(m_clk);
     AA.snd.bind(BB.rcv);
