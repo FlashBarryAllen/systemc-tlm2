@@ -48,7 +48,8 @@ public:
     SC_HAS_PROCESS(producer);
 
     // 原生 sc_port 绑定到 sc_fifo 的写入端
-    sc_port<sc_fifo_out_if<int>> out_port;
+    //sc_port<sc_fifo_out_if<int>> out_port;
+    sc_fifo_out<int> out_port;
 
     producer(sc_module_name name) : sc_module(name) {
         SC_THREAD(main_thread);
@@ -69,7 +70,8 @@ public:
     SC_HAS_PROCESS(consumer);
 
     // 原生 sc_port 绑定到 sc_fifo 的读取端
-    sc_port<sc_fifo_in_if<int>> in_port;
+    //sc_port<sc_fifo_in_if<int>> in_port;
+    sc_fifo_in<int> in_port;
 
     consumer(sc_module_name name) : sc_module(name) {
         SC_THREAD(main_thread);
