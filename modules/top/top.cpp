@@ -45,3 +45,15 @@ top_tlm::top_tlm(sc_module_name name) : AA("aa"), BB("bb"), m_clk("clk", 1, SC_N
     BB.m_clk(m_clk);
     AA.snd.bind(BB.rcv);
 }
+
+// consumer 非阻塞读取
+void consumer::main_thread() {
+    int data;
+    while (true) {
+        if (in_port->nb_read(data)) {
+            cout << "[" << sc_time_stamp() << "] Consumer: read " << data << endl;
+        } else {
+            wait(5, SC_NS);  // 没数据，等 5ns 再试
+        }
+    }
+}

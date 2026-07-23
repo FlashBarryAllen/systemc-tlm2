@@ -32,6 +32,17 @@ class b : public sc_module {
         simple_target_socket<b> rcv;
 };
 
+class top_tlm : public sc_module {
+    public:
+        SC_HAS_PROCESS(top_tlm);
+        top_tlm(sc_module_name name);
+        a AA;
+        b BB;
+    
+    public:
+        sc_clock m_clk;
+};
+
 class producer : public sc_module {
 public:
     SC_HAS_PROCESS(producer);
@@ -65,24 +76,7 @@ public:
     }
 
 private:
-    void main_thread() {
-        int data;
-        for (int i = 0; i < 5; i++) {
-            in_port->read(data);  // 阻塞读取，fifo 空时自动挂起
-            cout << "[" << sc_time_stamp() << "] Consumer: read " << data << endl;
-        }
-    }
-};
-
-class top_tlm : public sc_module {
-    public:
-        SC_HAS_PROCESS(top_tlm);
-        top_tlm(sc_module_name name);
-        a AA;
-        b BB;
-    
-    public:
-        sc_clock m_clk;
+    void main_thread();
 };
 
 class top : public sc_module {
