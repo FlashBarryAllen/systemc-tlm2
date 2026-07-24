@@ -18,7 +18,7 @@ int sc_main(int argc, char* argv[])
     InitGoogleTest(&argc, argv);
 
     TEST_aaa();
-    //sc_start(20, sc_core::SC_NS);
+    TEST_top();
     std::cout << "done" << std::endl;
 
     return 0;

@@ -1,47 +1,50 @@
 #ifndef TOP_H
 #define TOP_H
 
-#include <node.h>
-#include <tg-tlm.h>
-#include <traffic-desc.h>
-#include <gen_utils.h>
-#include <memory.h>
-#include <memory>
-#include <dma_ctrl_lt.h>
-#include <dma_ctrl_at.h>
-#include <dma_engine.h>
+#include <systemc>
+#include <tlm>
 
-using namespace sc_core;
-using namespace sc_dt;
 using namespace std;
-using namespace gen_utils;
+using namespace tlm;
+using namespace sc_core;
 
-#define RAM_SIZE (8 * 1024)
+class producer : public sc_module {
+public:
+    SC_HAS_PROCESS(producer);
+    producer(sc_module_name name);
+    ~producer();
 
-struct gen_data
-{
-    int cmd;
-    uint64_t addr;
-    unsigned char * data_ptr;
-    int len;
+    void run();
+public:
+    sc_in_clk m_clk;
+    sc_fifo_out<int> tx;
+    int m_data;
 };
 
-class top : public sc_core::sc_module {
-    public:
-        SC_HAS_PROCESS(top);
-        top(sc_core::sc_module_name name);
-        ~top();
- 
-        void run();
-        virtual void b_transport(tlm::tlm_generic_payload& trans, sc_time& delay);
- 
-    public:
-        sc_clock clk;
-        sc_in_clk clk_in;
-        TLMTrafficGenerator tg;
-        memory b0_mem;
-        //tlm_utils::simple_target_socket<top> tgt_socket;
-        deque<shared_ptr<gen_data>> m_input_que;
- };
+class consumer : public sc_module {
+public:
+    SC_HAS_PROCESS(consumer);
+    consumer(sc_module_name name);
+    ~consumer();
+
+    void run();
+
+public:
+    sc_in_clk m_clk;
+    sc_fifo_in<int> rx;
+};
+
+class top : public sc_module {
+public:
+    SC_HAS_PROCESS(top);
+    top(sc_module_name name);
+    ~top();
+
+public:
+    sc_clock m_clk;
+    producer pro;
+    consumer con;
+    sc_fifo<int> fifo;
+};
 
  #endif

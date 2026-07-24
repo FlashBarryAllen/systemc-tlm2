@@ -16,7 +16,9 @@
 #include "islip_wrr.h"
 #include "dpa.h"
 #include "lsu.h"
+#include "top.h"
 
 void TEST_aaa();
+void TEST_top();
 
 #endif // TEST_H
