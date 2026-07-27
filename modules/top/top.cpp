@@ -1,7 +1,7 @@
 #include <top.h>
 
 producer::producer(sc_module_name name) : m_data(100) {
-    SC_THREAD(run);
+    SC_METHOD(run);
     sensitive << m_clk.pos();
     dont_initialize();
 }
@@ -11,17 +11,14 @@ producer::~producer() {
 }
 
 void producer::run() {
-    while (true) {
-        wait();
-        int data = m_data + 100;
-        m_data = data;
-        tx->write(data);
-        cout << "tim: " << sc_time_stamp() << ", write data= " << data << endl;
-    }
+    int data = m_data + 100;
+    m_data = data;
+    tx->write(data);
+    cout << "tim: " << sc_time_stamp() << ", write data= " << data << endl;
 }
 
 consumer::consumer(sc_module_name name) {
-    SC_THREAD(run);
+    SC_METHOD(run);
     sensitive << m_clk.pos();
     dont_initialize();
 }
@@ -31,16 +28,11 @@ consumer::~consumer() {
 }
 
 void consumer::run() {
-    while (true) {
-        wait();
-        int data = 0;
-        if (rx->nb_read(data)) {
-            cout << "tim: " << sc_time_stamp() << ", read data= " << data << endl;
-        } else {
-            wait(rx->data_written_event());
-            rx->read(data);
-            cout << "tim: " << sc_time_stamp() << ", read data= " << data << endl;
-        }
+    int data = 0;
+    if (rx->nb_read(data)) {
+        cout << "tim: " << sc_time_stamp() << ", read data= " << data << endl;
+    } else {
+        next_trigger(rx->data_written_event());
     }
 }
 
