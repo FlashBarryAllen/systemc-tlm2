@@ -2,8 +2,8 @@
 
 producer::producer(sc_module_name name) : m_data(100) {
     SC_THREAD(run);
-    //sensitive << m_clk.pos();
-    //dont_initialize();
+    sensitive << m_clk.pos();
+    dont_initialize();
 }
 
 producer::~producer() {
@@ -11,20 +11,19 @@ producer::~producer() {
 }
 
 void producer::run() {
-    int data = 0;
     while (true) {
-        data = m_data + 100;
+        wait();
+        int data = m_data + 100;
         m_data = data;
-        tx->nb_write(data);
+        tx->write(data);
         cout << "tim: " << sc_time_stamp() << ", write data= " << data << endl;
-        wait(1, SC_NS);
     }
 }
 
 consumer::consumer(sc_module_name name) {
     SC_THREAD(run);
-    //sensitive << m_clk.pos();
-    //dont_initialize();
+    sensitive << m_clk.pos();
+    dont_initialize();
 }
 
 consumer::~consumer() {
@@ -32,12 +31,16 @@ consumer::~consumer() {
 }
 
 void consumer::run() {
-    int data = 0;
     while (true) {
+        wait();
+        int data = 0;
         if (rx->nb_read(data)) {
             cout << "tim: " << sc_time_stamp() << ", read data= " << data << endl;
+        } else {
+            wait(rx->data_written_event());
+            rx->read(data);
+            cout << "tim: " << sc_time_stamp() << ", read data= " << data << endl;
         }
-        wait(1, SC_NS);
     }
 }
 
